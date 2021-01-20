@@ -13,7 +13,7 @@ import java.io.Serializable;
 
 /**
 * @program: JwtAuthenticationEntryPoint
-* @Description: 未登录时显示401错误
+* @Description: 未登录时显示403错误
 * @Author: SoCMo
 * @Date: 2020/12/24
 */

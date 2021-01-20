@@ -37,7 +37,6 @@ public class MyUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        log.info("登录用户：" + userId);
         //从数据库中获取这个用户
         UserDo userDo = userDoMapper.selectByPrimaryKey(userId);
         if(userDo == null) {

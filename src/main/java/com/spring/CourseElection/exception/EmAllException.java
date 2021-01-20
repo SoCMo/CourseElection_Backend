@@ -11,6 +11,8 @@ public enum EmAllException implements CommonError {
 
     IDENTITY_ERROR(403, "没有权限"),
 
+    REQUEST_FORBIDDEN(405, "没有权限进行本次请求"),
+
     USER_AND_PASSWORD_ERROR(400, "输入密码账号或者密码错误"),
 
     TOKEN_PHASE_ERROR(500, "解析token出错"),

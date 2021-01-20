@@ -62,11 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers(UserConstRepository.LOGIN_URL).permitAll()
                 .antMatchers("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**").permitAll()
-                .antMatchers("/user/**").authenticated()
-                .antMatchers("/secretary/**").hasRole("SECRETARY")
-                .antMatchers("/member/**").hasRole("MEMBER")
-                .antMatchers("/leader/**").hasRole("LEADER")
-                .antMatchers("/chairman/**").hasRole("CHAIRMAN");
+                .antMatchers("/user/**").authenticated();
 
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
