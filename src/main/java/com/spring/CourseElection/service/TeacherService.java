@@ -26,5 +26,14 @@ public interface TeacherService {
     * @Author: SoCMo
     * @Date: 2021/1/21
     */
-    public Result createConference(CourseCreateInfo courseCreateInfo);
+    public Result creation(CourseCreateInfo courseCreateInfo);
+
+    /**
+    * @Description: 删除课程
+    * @Param: [id]
+    * @Return: com.spring.CourseElection.model.response.Result
+    * @Author: SoCMo
+    * @Date: 2021/1/21
+    */
+    public Result deletion(Integer id);
 }

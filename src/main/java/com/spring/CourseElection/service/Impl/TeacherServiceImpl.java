@@ -1,9 +1,13 @@
 package com.spring.CourseElection.service.Impl;
 
 import com.spring.CourseElection.dao.CourseDoMapper;
+import com.spring.CourseElection.dao.ElectionDoMapper;
+import com.spring.CourseElection.exception.AllException;
 import com.spring.CourseElection.exception.EmAllException;
 import com.spring.CourseElection.model.entity.CourseDo;
 import com.spring.CourseElection.model.entity.CourseDoExample;
+import com.spring.CourseElection.model.entity.ElectionDoExample;
+import com.spring.CourseElection.model.entity.UserDo;
 import com.spring.CourseElection.model.request.CourseCreateInfo;
 import com.spring.CourseElection.model.response.Result;
 import com.spring.CourseElection.model.response.info.CourseVo;
@@ -33,6 +37,9 @@ public class TeacherServiceImpl implements TeacherService {
     private CourseDoMapper courseDoMapper;
 
     @Resource
+    private ElectionDoMapper electionDoMapper;
+
+    @Resource
     private AuthTool authTool;
 
     @Override
@@ -53,12 +60,50 @@ public class TeacherServiceImpl implements TeacherService {
             CourseVo courseVo = new CourseVo();
             BeanUtils.copyProperties(courseDo, courseVo);
             courseVo.setCourseTime(TimeTool.loadTime(courseDo.getCourseTime()));
+
+            ElectionDoExample electionDoExample = new ElectionDoExample();
+            electionDoExample.createCriteria()
+                    .andCourseIdEqualTo(courseDo.getId());
+            courseVo.setElectionNum(electionDoMapper.countByExample(electionDoExample));
+            courseVoList.add(courseVo);
         }
         return ResultTool.success(courseVoList);
     }
 
     @Override
-    public Result createConference(CourseCreateInfo courseCreateInfo) {
-        return null;
+    public Result creation(CourseCreateInfo courseCreateInfo) {
+        try {
+            UserDo userDo = authTool.getUser();
+
+            CourseDo courseDo = new CourseDo();
+            BeanUtils.copyProperties(courseCreateInfo, courseDo);
+            courseDo.setTeacherId(userDo.getUserId());
+            courseDo.setTeacherName(userDo.getName());
+            courseDo.setCourseTime(TimeTool.saveTime(courseCreateInfo.getCourseTime()));
+
+            if(courseDoMapper.insertSelective(courseDo) == 1){
+                return ResultTool.success();
+            }else {
+                return ResultTool.error(EmAllException.DATABASE_ERROR);
+            }
+
+        } catch (AllException e) {
+            log.error(e.getMsg());
+            return ResultTool.error(EmAllException.DATABASE_ERROR);
+        }
+    }
+
+    @Override
+    public Result deletion(Integer id) {
+        CourseDo courseDo = courseDoMapper.selectByPrimaryKey(id);
+        if(courseDo.getTeacherId().equals(authTool.getUserId())){
+            if(courseDoMapper.deleteByPrimaryKey(id) == 1){
+                return ResultTool.success();
+            }else {
+                return ResultTool.error(EmAllException.DATABASE_ERROR);
+            }
+        }else {
+            return ResultTool.error(EmAllException.REQUEST_FORBIDDEN);
+        }
     }
 }

@@ -2,9 +2,7 @@ package com.spring.CourseElection.tools;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * program: TimeTool
@@ -14,6 +12,8 @@ import java.util.TimeZone;
  */
 public class TimeTool {
     private static final String[] Week_CN = {"周一", "周二", "周三", "周四", "周五", "周六", "周七"};
+
+    private static final List<String> Num_CN = Arrays.asList("一", "二", "三", "四", "五", "六", "七");
 
     /**
      * @Description: date转换为最小为分的格式
@@ -96,7 +96,27 @@ public class TimeTool {
     * @Date: 2021/1/21
     */
     public static String saveTime(String time) {
-        return "";
+        int [][] timeRange = new int[7][13];
+        for(String day: time.split(";")){
+            String[] split = day.split(":");
+            int dayIndex = Num_CN.indexOf(split[0]);
+
+            if(!split[1].contains("-")){
+                timeRange[dayIndex][Integer.parseInt(split[1])] = 1;
+            }else {
+                String[] fromTO = split[1].split("-");
+                for(int i = Integer.parseInt(fromTO[0]); i <= Integer.parseInt(fromTO[1]); i++)
+                timeRange[dayIndex][i] = 1;
+            }
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i = 0; i < 7; i++){
+            for (int j = 0; j < 13; j++) {
+                stringBuilder.append(timeRange[i][j]);
+            }
+        }
+        return stringBuilder.toString();
     }
 
     /**
@@ -118,7 +138,8 @@ public class TimeTool {
                 }
             }
             if(min != 99){
-                result.append(Week_CN[i]).append(":").append(min + 1).append(max + 1).append(";");
+                result.append(Week_CN[i]).append(":").append(min + 1)
+                        .append("-").append(max + 1).append(";");
             }
         }
         return result.toString();
