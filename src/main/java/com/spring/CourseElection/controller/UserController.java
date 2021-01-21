@@ -26,9 +26,6 @@ public class UserController {
     @Resource
     private UserService userService;
 
-    @Resource
-    private AuthTool authTool;
-
     @GetMapping("info")
     @ApiOperation(value = "获取用户信息")
     @ApiImplicitParam(name = "userId", value = "学工号", required = true, dataType = "String")

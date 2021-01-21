@@ -3,6 +3,7 @@ package com.spring.CourseElection.tools;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -12,6 +13,8 @@ import java.util.TimeZone;
  * create: 2019/12/6 14:28
  */
 public class TimeTool {
+    private static final String[] Week_CN = {"周一", "周二", "周三", "周四", "周五", "周六", "周七"};
+
     /**
      * @Description: date转换为最小为分的格式
      * @Param: [date]
@@ -104,12 +107,20 @@ public class TimeTool {
     * @Date: 2021/1/21
     */
     public static String loadTime(String time) {
+        StringBuilder result = new StringBuilder("");
         for(int i = 0; i < 7; i++){
             int min = 99;
             int max = 0;
             for(int j = 0; j < 13; j++){
-
+                if(time.charAt(i * 13 + j) == '1'){
+                    if(min > j) min = j;
+                    if(max < j) max = j;
+                }
+            }
+            if(min != 99){
+                result.append(Week_CN[i]).append(":").append(min + 1).append(max + 1).append(";");
             }
         }
+        return result.toString();
     }
 }

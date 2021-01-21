@@ -4,6 +4,7 @@ import com.spring.CourseElection.dao.CourseDoMapper;
 import com.spring.CourseElection.exception.EmAllException;
 import com.spring.CourseElection.model.entity.CourseDo;
 import com.spring.CourseElection.model.entity.CourseDoExample;
+import com.spring.CourseElection.model.request.CourseCreateInfo;
 import com.spring.CourseElection.model.response.Result;
 import com.spring.CourseElection.model.response.info.CourseVo;
 import com.spring.CourseElection.service.TeacherService;
@@ -51,7 +52,13 @@ public class TeacherServiceImpl implements TeacherService {
         for(CourseDo courseDo: courseDoList){
             CourseVo courseVo = new CourseVo();
             BeanUtils.copyProperties(courseDo, courseVo);
-            courseVo.setCourseTime(TimeTool.);
+            courseVo.setCourseTime(TimeTool.loadTime(courseDo.getCourseTime()));
         }
+        return ResultTool.success(courseVoList);
+    }
+
+    @Override
+    public Result createConference(CourseCreateInfo courseCreateInfo) {
+        return null;
     }
 }
