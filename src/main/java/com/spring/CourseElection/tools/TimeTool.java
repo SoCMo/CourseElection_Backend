@@ -84,4 +84,32 @@ public class TimeTool {
             return null;
         }
     }
+
+    /**
+    * @Description: 转成存储在数据库中的时间
+    * @Param: [time]
+    * @Return: java.lang.String
+    * @Author: SoCMo
+    * @Date: 2021/1/21
+    */
+    public static String saveTime(String time) {
+        return "";
+    }
+
+    /**
+    * @Description: 读取时间
+    * @Param: [time]
+    * @Return: java.lang.String
+    * @Author: SoCMo
+    * @Date: 2021/1/21
+    */
+    public static String loadTime(String time) {
+        for(int i = 0; i < 7; i++){
+            int min = 99;
+            int max = 0;
+            for(int j = 0; j < 13; j++){
+
+            }
+        }
+    }
 }
