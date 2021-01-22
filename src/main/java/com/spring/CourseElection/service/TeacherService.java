@@ -36,4 +36,13 @@ public interface TeacherService {
     * @Date: 2021/1/21
     */
     public Result deletion(Integer id);
+
+    /**
+    * @Description: 获取课程详情
+    * @Param: [id]
+    * @Return: com.spring.CourseElection.model.response.Result
+    * @Author: SoCMo
+    * @Date: 2021/1/21
+    */
+    public Result details(Integer id);
 }

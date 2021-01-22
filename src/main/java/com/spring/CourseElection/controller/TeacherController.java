@@ -47,4 +47,10 @@ public class TeacherController {
         if(id <= 0 ) return ResultTool.error(EmAllException.BAD_REQUEST);
         return teacherService.deletion(id);
     }
+
+    @GetMapping("/details")
+    @ApiOperation(value = "获取课程详情")
+    public Result details(Integer id){
+        return teacherService.details(id);
+    }
 }

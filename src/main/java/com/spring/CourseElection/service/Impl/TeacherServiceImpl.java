@@ -2,15 +2,15 @@ package com.spring.CourseElection.service.Impl;
 
 import com.spring.CourseElection.dao.CourseDoMapper;
 import com.spring.CourseElection.dao.ElectionDoMapper;
+import com.spring.CourseElection.dao.UserDoMapper;
 import com.spring.CourseElection.exception.AllException;
 import com.spring.CourseElection.exception.EmAllException;
-import com.spring.CourseElection.model.entity.CourseDo;
-import com.spring.CourseElection.model.entity.CourseDoExample;
-import com.spring.CourseElection.model.entity.ElectionDoExample;
-import com.spring.CourseElection.model.entity.UserDo;
+import com.spring.CourseElection.model.entity.*;
 import com.spring.CourseElection.model.request.CourseCreateInfo;
 import com.spring.CourseElection.model.response.Result;
+import com.spring.CourseElection.model.response.info.CourseDetail;
 import com.spring.CourseElection.model.response.info.CourseVo;
+import com.spring.CourseElection.model.response.info.StudentVo;
 import com.spring.CourseElection.service.TeacherService;
 import com.spring.CourseElection.tools.AuthTool;
 import com.spring.CourseElection.tools.ResultTool;
@@ -20,8 +20,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
 * @program: TeacherServiceImpl
@@ -41,6 +41,9 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Resource
     private AuthTool authTool;
+
+    @Resource
+    private UserDoMapper userDoMapper;
 
     @Override
     public Result list() {
@@ -105,5 +108,71 @@ public class TeacherServiceImpl implements TeacherService {
         }else {
             return ResultTool.error(EmAllException.REQUEST_FORBIDDEN);
         }
+    }
+
+    @Override
+    public Result details(Integer id) {
+        CourseDo courseDo = courseDoMapper.selectByPrimaryKey(id);
+
+        if(courseDo == null){
+            return ResultTool.error(EmAllException.DATABASE_ERROR.getErrCode(),
+                    "该课程不存在！");
+        }
+
+        if(!courseDo.getTeacherId().equals(authTool.getUserId())){
+            return ResultTool.error(EmAllException.DATABASE_ERROR.getErrCode(),
+                    "您只能管理自己的课程！");
+        }
+
+        CourseDetail courseDetail = new CourseDetail();
+
+        CourseVo courseVo = new CourseVo();
+        BeanUtils.copyProperties(courseDo, courseVo);
+        courseVo.setCourseTime(TimeTool.loadTime(courseDo.getCourseTime()));
+
+        ElectionDoExample electionDoExample = new ElectionDoExample();
+        electionDoExample.createCriteria()
+                .andCourseIdEqualTo(courseDo.getId());
+        List<ElectionDo> electionDoList = electionDoMapper.selectByExample(electionDoExample);
+        courseVo.setElectionNum(electionDoList.size());
+
+
+        if(!electionDoList.isEmpty()){
+            Map<String, List<Double>> gradeMap = new HashMap<>();
+            for(ElectionDo electionDo: electionDoList){
+                gradeMap.put(electionDo.getStudentId(),
+                        Arrays.asList(
+                                electionDo.getGrade(), electionDo.getUsual(), electionDo.getExamination()
+                        )
+                );
+            }
+
+            UserDoExample userDoExample = new UserDoExample();
+            userDoExample.createCriteria()
+                    .andUserIdIn(electionDoList.stream()
+                            .map(ElectionDo::getStudentId)
+                            .collect(Collectors.toList()));
+            userDoExample.setOrderByClause("user_id asc");
+
+            List<StudentVo> studentVoList = new ArrayList<>();
+            List<UserDo> userDoList = userDoMapper.selectByExample(userDoExample);
+            for(UserDo userDo: userDoList){
+                StudentVo studentVo = new StudentVo();
+                BeanUtils.copyProperties(userDo, studentVo);
+                List<Double> grade = gradeMap.get(userDo.getUserId());
+                studentVo.setUsual(grade.get(1));
+                studentVo.setGrade(grade.get(0));
+                studentVo.setExamination(grade.get(2));
+                studentVoList.add(studentVo);
+            }
+
+            courseDetail.setStudentVoList(studentVoList);
+        }else {
+            courseDetail.setStudentVoList(new ArrayList<>());
+        }
+
+        courseDetail.setCourseVo(courseVo);
+
+        return ResultTool.success(courseVo);
     }
 }
