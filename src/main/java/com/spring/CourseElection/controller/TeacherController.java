@@ -38,7 +38,7 @@ public class TeacherController {
     }
 
     @PostMapping("/creation")
-    @ApiOperation(value = "创建课程")
+    @ApiOperation(value = "获取课程列表")
     public Result createConference(@Validated @RequestBody CourseCreateInfo courseCreateInfo){
         return teacherService.creation(courseCreateInfo);
     }
@@ -67,5 +67,11 @@ public class TeacherController {
     @ApiOperation(value = "删除已选学生")
     public Result studentDel(@Validated @RequestBody StudentDelReq studentDelReq){
         return teacherService.studentDel(studentDelReq);
+    }
+
+    @GetMapping("/details")
+    @ApiOperation(value = "获取课程详情")
+    public Result details(Integer id){
+        return teacherService.details(id);
     }
 }
