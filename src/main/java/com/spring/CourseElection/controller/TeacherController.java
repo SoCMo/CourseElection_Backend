@@ -68,10 +68,4 @@ public class TeacherController {
     public Result studentDel(@Validated @RequestBody StudentDelReq studentDelReq){
         return teacherService.studentDel(studentDelReq);
     }
-
-    @GetMapping("/details")
-    @ApiOperation(value = "获取课程详情")
-    public Result details(Integer id){
-        return teacherService.details(id);
-    }
 }
