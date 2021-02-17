@@ -1,5 +1,7 @@
 package com.spring.CourseElection.tools;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -97,16 +99,19 @@ public class TimeTool {
     */
     public static String saveTime(String time) {
         int [][] timeRange = new int[7][13];
+        time = time.replace("周", "");
+
         for(String day: time.split(";")){
             String[] split = day.split(":");
+            if(StringUtils.isBlank(split[0])) continue;
             int dayIndex = Num_CN.indexOf(split[0]);
 
             if(!split[1].contains("-")){
-                timeRange[dayIndex][Integer.parseInt(split[1])] = 1;
+                timeRange[dayIndex][Integer.parseInt(split[1]) - 1] = 1;
             }else {
                 String[] fromTO = split[1].split("-");
                 for(int i = Integer.parseInt(fromTO[0]); i <= Integer.parseInt(fromTO[1]); i++)
-                timeRange[dayIndex][i] = 1;
+                timeRange[dayIndex][i - 1] = 1;
             }
         }
 

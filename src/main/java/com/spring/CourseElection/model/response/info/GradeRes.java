@@ -1,0 +1,26 @@
+package com.spring.CourseElection.model.response.info;
+
+import lombok.Data;
+
+/**
+* @program: GradeRes
+* @Description: 学生成绩信息返回
+* @Author: SoCMo
+* @Date: 2021/2/17
+*/
+@Data
+public class GradeRes {
+    private String userId;
+
+    private String name;
+
+    private String department;
+
+    private String email;
+
+    private Double grade;
+
+    private Double usual;
+
+    private Double examination;
+}

@@ -2,15 +2,16 @@ package com.spring.CourseElection.service.Impl;
 
 import com.spring.CourseElection.dao.CourseDoMapper;
 import com.spring.CourseElection.dao.ElectionDoMapper;
+import com.spring.CourseElection.dao.UserDoMapper;
 import com.spring.CourseElection.exception.AllException;
 import com.spring.CourseElection.exception.EmAllException;
-import com.spring.CourseElection.model.entity.CourseDo;
-import com.spring.CourseElection.model.entity.CourseDoExample;
-import com.spring.CourseElection.model.entity.ElectionDoExample;
-import com.spring.CourseElection.model.entity.UserDo;
+import com.spring.CourseElection.model.entity.*;
 import com.spring.CourseElection.model.request.CourseCreateInfo;
+import com.spring.CourseElection.model.request.CourseUpdateInfo;
+import com.spring.CourseElection.model.request.StudentDelReq;
 import com.spring.CourseElection.model.response.Result;
 import com.spring.CourseElection.model.response.info.CourseVo;
+import com.spring.CourseElection.model.response.info.GradeRes;
 import com.spring.CourseElection.service.TeacherService;
 import com.spring.CourseElection.tools.AuthTool;
 import com.spring.CourseElection.tools.ResultTool;
@@ -38,6 +39,9 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Resource
     private ElectionDoMapper electionDoMapper;
+
+    @Resource
+    private UserDoMapper userDoMapper;
 
     @Resource
     private AuthTool authTool;
@@ -105,5 +109,85 @@ public class TeacherServiceImpl implements TeacherService {
         }else {
             return ResultTool.error(EmAllException.REQUEST_FORBIDDEN);
         }
+    }
+
+    @Override
+    public Result update(CourseUpdateInfo courseUpdateInfo) {
+        CourseDo courseDoOlder = courseDoMapper.selectByPrimaryKey(courseUpdateInfo.getId());
+        if(courseDoOlder == null){
+            return ResultTool.error(EmAllException.BAD_REQUEST.getErrCode(), "该课程不存在");
+        }
+
+        if(!courseDoOlder.getTeacherId().equals(authTool.getUserId())){
+            return ResultTool.error(EmAllException.BAD_REQUEST.getErrCode(), "只能更改自己的课程信息");
+        }
+
+        CourseDo courseDo = new CourseDo();
+        BeanUtils.copyProperties(courseUpdateInfo, courseDo);
+        courseDo.setCourseTime(TimeTool.saveTime(courseUpdateInfo.getCourseTime()));
+        if(courseDoMapper.updateByPrimaryKeySelective(courseDo) == 1){
+            return ResultTool.success();
+        }
+
+        return ResultTool.error(EmAllException.DATABASE_ERROR);
+    }
+
+    @Override
+    public Result studentList(Integer id) {
+        try{
+            CourseDo courseDo = courseDoMapper.selectByPrimaryKey(id);
+            if(courseDo == null){
+                return ResultTool.error(EmAllException.BAD_REQUEST.getErrCode(), "该课程不存在");
+            }
+
+            if(!courseDo.getTeacherId().equals(authTool.getUserId())){
+                return ResultTool.error(EmAllException.REQUEST_FORBIDDEN.getErrCode(), "仅能查询自己课程的学生");
+            }
+
+            ElectionDoExample electionDoExample = new ElectionDoExample();
+            electionDoExample.createCriteria()
+                    .andCourseIdEqualTo(id);
+            List<ElectionDo> electionDoList = electionDoMapper.selectByExample(electionDoExample);
+            if(electionDoList.isEmpty()){
+                return ResultTool.error(EmAllException.BAD_REQUEST.getErrCode(), "未有学生加入课程");
+            }
+
+            List<GradeRes> gradeResList = new ArrayList<>();
+            for(ElectionDo electionDo : electionDoList){
+                GradeRes gradeRes = new GradeRes();
+                BeanUtils.copyProperties(electionDo, gradeRes);
+
+                UserDo userDo = userDoMapper.selectByPrimaryKey(electionDo.getStudentId());
+                if(userDo == null) throw new AllException(EmAllException.DATABASE_ERROR);
+                BeanUtils.copyProperties(userDo, gradeRes);
+
+                gradeResList.add(gradeRes);
+            }
+
+            return ResultTool.success(gradeResList);
+        }catch (AllException e){
+            log.error(e.getMsg());
+            return ResultTool.error(e.getErrCode(), e.getMsg());
+        }
+    }
+
+    @Override
+    public Result studentDel(StudentDelReq studentDelReq) {
+        CourseDo courseDo = courseDoMapper.selectByPrimaryKey(studentDelReq.getCourseId());
+        if(courseDo == null){
+            return ResultTool.error(EmAllException.BAD_REQUEST.getErrCode(), "该课程不存在");
+        }
+
+        if(!courseDo.getTeacherId().equals(authTool.getUserId())){
+            return ResultTool.error(EmAllException.REQUEST_FORBIDDEN.getErrCode(), "只能删除自己课程的学生");
+        }
+
+        ElectionDoExample electionDoExample = new ElectionDoExample();
+        electionDoExample.createCriteria()
+                .andCourseIdEqualTo(studentDelReq.getCourseId())
+                .andStudentIdEqualTo(studentDelReq.getUserId());
+        if(electionDoMapper.deleteByExample(electionDoExample) > 0){
+            return ResultTool.success();
+        }else return ResultTool.error(EmAllException.DATABASE_ERROR);
     }
 }

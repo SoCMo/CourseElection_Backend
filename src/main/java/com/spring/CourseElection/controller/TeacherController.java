@@ -2,6 +2,8 @@ package com.spring.CourseElection.controller;
 
 import com.spring.CourseElection.exception.EmAllException;
 import com.spring.CourseElection.model.request.CourseCreateInfo;
+import com.spring.CourseElection.model.request.CourseUpdateInfo;
+import com.spring.CourseElection.model.request.StudentDelReq;
 import com.spring.CourseElection.model.response.Result;
 import com.spring.CourseElection.service.TeacherService;
 import com.spring.CourseElection.tools.ResultTool;
@@ -36,7 +38,7 @@ public class TeacherController {
     }
 
     @PostMapping("/creation")
-    @ApiOperation(value = "获取课程列表")
+    @ApiOperation(value = "创建课程")
     public Result createConference(@Validated @RequestBody CourseCreateInfo courseCreateInfo){
         return teacherService.creation(courseCreateInfo);
     }
@@ -46,5 +48,24 @@ public class TeacherController {
     public Result deletion(Integer id){
         if(id <= 0 ) return ResultTool.error(EmAllException.BAD_REQUEST);
         return teacherService.deletion(id);
+    }
+
+    @PostMapping("/update")
+    @ApiOperation(value = "更新课程信息")
+    public Result update(@Validated @RequestBody CourseUpdateInfo courseUpdateInfo){
+        return teacherService.update(courseUpdateInfo);
+    }
+
+    @GetMapping("/studentList")
+    @ApiOperation(value = "查询课程学生")
+    public Result studentList(Integer id){
+        if(id <= 0 ) return ResultTool.error(EmAllException.BAD_REQUEST);
+        return teacherService.studentList(id);
+    }
+
+    @PostMapping("/studentDel")
+    @ApiOperation(value = "删除已选学生")
+    public Result studentDel(@Validated @RequestBody StudentDelReq studentDelReq){
+        return teacherService.studentDel(studentDelReq);
     }
 }
