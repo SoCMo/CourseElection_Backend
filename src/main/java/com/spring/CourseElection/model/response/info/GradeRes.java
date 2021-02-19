@@ -20,7 +20,7 @@ public class GradeRes {
 
     private Double grade;
 
-    private Double usual;
+    private Integer usual;
 
-    private Double examination;
+    private Integer examination;
 }

@@ -4,6 +4,7 @@ import com.spring.CourseElection.model.entity.ElectionDo;
 import com.spring.CourseElection.model.entity.ElectionDoExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 public interface ElectionDoMapper {
     int countByExample(ElectionDoExample example);
@@ -27,4 +28,10 @@ public interface ElectionDoMapper {
     int updateByPrimaryKeySelective(ElectionDo record);
 
     int updateByPrimaryKey(ElectionDo record);
+
+    @Update("UPDATE `election_info` set `grade` = (`usual` * #{proportion} + " +
+            " `examination` * (100 - #{proportion})) / 100.0" +
+            " WHERE `course_id` = #{courseId}")
+    int refresh(@Param("proportion") Integer proportion,
+                @Param("courseId") Integer courseId);
 }

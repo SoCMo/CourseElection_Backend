@@ -1,9 +1,6 @@
 package com.spring.CourseElection.service;
 
-import com.spring.CourseElection.model.request.CourseCreateInfo;
-import com.spring.CourseElection.model.request.CourseUpdateInfo;
-import com.spring.CourseElection.model.request.LoginInfo;
-import com.spring.CourseElection.model.request.StudentDelReq;
+import com.spring.CourseElection.model.request.*;
 import com.spring.CourseElection.model.response.Result;
 
 /**
@@ -65,4 +62,13 @@ public interface TeacherService {
     * @Date: 2021/2/17
     */
     Result studentDel(StudentDelReq studentDelReq);
+
+    /**
+    * @Description: 更新学生成绩
+    * @Param: [studentUpReq]
+    * @Return: com.spring.CourseElection.model.response.Result
+    * @Author: SoCMo
+    * @Date: 2021/2/19
+    */
+    Result studentUp(StudentUpReq studentUpReq);
 }

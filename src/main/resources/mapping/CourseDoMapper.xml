@@ -11,6 +11,7 @@
     <result column="course_time" property="courseTime" jdbcType="VARCHAR" />
     <result column="capacity" property="capacity" jdbcType="INTEGER" />
     <result column="election_num" property="electionNum" jdbcType="INTEGER" />
+    <result column="proportion" property="proportion" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -71,7 +72,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, name, teacher_id, teacher_name, credit, address, course_time, capacity, election_num
+    id, name, teacher_id, teacher_name, credit, address, course_time, capacity, election_num, 
+    proportion
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.spring.CourseElection.model.entity.CourseDoExample" >
     select
@@ -107,12 +109,12 @@
   <insert id="insert" parameterType="com.spring.CourseElection.model.entity.CourseDo" >
     insert into course_info (id, name, teacher_id, 
       teacher_name, credit, address, 
-      course_time, capacity, election_num
-      )
+      course_time, capacity, election_num, 
+      proportion)
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{teacherId,jdbcType=VARCHAR}, 
       #{teacherName,jdbcType=VARCHAR}, #{credit,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}, 
-      #{courseTime,jdbcType=VARCHAR}, #{capacity,jdbcType=INTEGER}, #{electionNum,jdbcType=INTEGER}
-      )
+      #{courseTime,jdbcType=VARCHAR}, #{capacity,jdbcType=INTEGER}, #{electionNum,jdbcType=INTEGER}, 
+      #{proportion,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.spring.CourseElection.model.entity.CourseDo" >
     insert into course_info
@@ -144,6 +146,9 @@
       <if test="electionNum != null" >
         election_num,
       </if>
+      <if test="proportion != null" >
+        proportion,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -172,6 +177,9 @@
       </if>
       <if test="electionNum != null" >
         #{electionNum,jdbcType=INTEGER},
+      </if>
+      <if test="proportion != null" >
+        #{proportion,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -211,6 +219,9 @@
       <if test="record.electionNum != null" >
         election_num = #{record.electionNum,jdbcType=INTEGER},
       </if>
+      <if test="record.proportion != null" >
+        proportion = #{record.proportion,jdbcType=INTEGER},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -226,7 +237,8 @@
       address = #{record.address,jdbcType=VARCHAR},
       course_time = #{record.courseTime,jdbcType=VARCHAR},
       capacity = #{record.capacity,jdbcType=INTEGER},
-      election_num = #{record.electionNum,jdbcType=INTEGER}
+      election_num = #{record.electionNum,jdbcType=INTEGER},
+      proportion = #{record.proportion,jdbcType=INTEGER}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -258,6 +270,9 @@
       <if test="electionNum != null" >
         election_num = #{electionNum,jdbcType=INTEGER},
       </if>
+      <if test="proportion != null" >
+        proportion = #{proportion,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -270,7 +285,8 @@
       address = #{address,jdbcType=VARCHAR},
       course_time = #{courseTime,jdbcType=VARCHAR},
       capacity = #{capacity,jdbcType=INTEGER},
-      election_num = #{electionNum,jdbcType=INTEGER}
+      election_num = #{electionNum,jdbcType=INTEGER},
+      proportion = #{proportion,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

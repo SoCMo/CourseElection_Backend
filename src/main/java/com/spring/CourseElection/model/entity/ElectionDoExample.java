@@ -574,52 +574,52 @@ public class ElectionDoExample {
             return (Criteria) this;
         }
 
-        public Criteria andUsualEqualTo(Double value) {
+        public Criteria andUsualEqualTo(Integer value) {
             addCriterion("usual =", value, "usual");
             return (Criteria) this;
         }
 
-        public Criteria andUsualNotEqualTo(Double value) {
+        public Criteria andUsualNotEqualTo(Integer value) {
             addCriterion("usual <>", value, "usual");
             return (Criteria) this;
         }
 
-        public Criteria andUsualGreaterThan(Double value) {
+        public Criteria andUsualGreaterThan(Integer value) {
             addCriterion("usual >", value, "usual");
             return (Criteria) this;
         }
 
-        public Criteria andUsualGreaterThanOrEqualTo(Double value) {
+        public Criteria andUsualGreaterThanOrEqualTo(Integer value) {
             addCriterion("usual >=", value, "usual");
             return (Criteria) this;
         }
 
-        public Criteria andUsualLessThan(Double value) {
+        public Criteria andUsualLessThan(Integer value) {
             addCriterion("usual <", value, "usual");
             return (Criteria) this;
         }
 
-        public Criteria andUsualLessThanOrEqualTo(Double value) {
+        public Criteria andUsualLessThanOrEqualTo(Integer value) {
             addCriterion("usual <=", value, "usual");
             return (Criteria) this;
         }
 
-        public Criteria andUsualIn(List<Double> values) {
+        public Criteria andUsualIn(List<Integer> values) {
             addCriterion("usual in", values, "usual");
             return (Criteria) this;
         }
 
-        public Criteria andUsualNotIn(List<Double> values) {
+        public Criteria andUsualNotIn(List<Integer> values) {
             addCriterion("usual not in", values, "usual");
             return (Criteria) this;
         }
 
-        public Criteria andUsualBetween(Double value1, Double value2) {
+        public Criteria andUsualBetween(Integer value1, Integer value2) {
             addCriterion("usual between", value1, value2, "usual");
             return (Criteria) this;
         }
 
-        public Criteria andUsualNotBetween(Double value1, Double value2) {
+        public Criteria andUsualNotBetween(Integer value1, Integer value2) {
             addCriterion("usual not between", value1, value2, "usual");
             return (Criteria) this;
         }
@@ -634,52 +634,52 @@ public class ElectionDoExample {
             return (Criteria) this;
         }
 
-        public Criteria andExaminationEqualTo(Double value) {
+        public Criteria andExaminationEqualTo(Integer value) {
             addCriterion("examination =", value, "examination");
             return (Criteria) this;
         }
 
-        public Criteria andExaminationNotEqualTo(Double value) {
+        public Criteria andExaminationNotEqualTo(Integer value) {
             addCriterion("examination <>", value, "examination");
             return (Criteria) this;
         }
 
-        public Criteria andExaminationGreaterThan(Double value) {
+        public Criteria andExaminationGreaterThan(Integer value) {
             addCriterion("examination >", value, "examination");
             return (Criteria) this;
         }
 
-        public Criteria andExaminationGreaterThanOrEqualTo(Double value) {
+        public Criteria andExaminationGreaterThanOrEqualTo(Integer value) {
             addCriterion("examination >=", value, "examination");
             return (Criteria) this;
         }
 
-        public Criteria andExaminationLessThan(Double value) {
+        public Criteria andExaminationLessThan(Integer value) {
             addCriterion("examination <", value, "examination");
             return (Criteria) this;
         }
 
-        public Criteria andExaminationLessThanOrEqualTo(Double value) {
+        public Criteria andExaminationLessThanOrEqualTo(Integer value) {
             addCriterion("examination <=", value, "examination");
             return (Criteria) this;
         }
 
-        public Criteria andExaminationIn(List<Double> values) {
+        public Criteria andExaminationIn(List<Integer> values) {
             addCriterion("examination in", values, "examination");
             return (Criteria) this;
         }
 
-        public Criteria andExaminationNotIn(List<Double> values) {
+        public Criteria andExaminationNotIn(List<Integer> values) {
             addCriterion("examination not in", values, "examination");
             return (Criteria) this;
         }
 
-        public Criteria andExaminationBetween(Double value1, Double value2) {
+        public Criteria andExaminationBetween(Integer value1, Integer value2) {
             addCriterion("examination between", value1, value2, "examination");
             return (Criteria) this;
         }
 
-        public Criteria andExaminationNotBetween(Double value1, Double value2) {
+        public Criteria andExaminationNotBetween(Integer value1, Integer value2) {
             addCriterion("examination not between", value1, value2, "examination");
             return (Criteria) this;
         }

@@ -9,8 +9,10 @@ import com.spring.CourseElection.model.entity.*;
 import com.spring.CourseElection.model.request.CourseCreateInfo;
 import com.spring.CourseElection.model.request.CourseUpdateInfo;
 import com.spring.CourseElection.model.request.StudentDelReq;
+import com.spring.CourseElection.model.request.StudentUpReq;
 import com.spring.CourseElection.model.response.Result;
 import com.spring.CourseElection.model.response.info.CourseVo;
+import com.spring.CourseElection.model.response.info.GradeListRes;
 import com.spring.CourseElection.model.response.info.GradeRes;
 import com.spring.CourseElection.service.TeacherService;
 import com.spring.CourseElection.tools.AuthTool;
@@ -19,6 +21,8 @@ import com.spring.CourseElection.tools.TimeTool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -163,7 +167,11 @@ public class TeacherServiceImpl implements TeacherService {
                 gradeResList.add(gradeRes);
             }
 
-            return ResultTool.success(gradeResList);
+            GradeListRes gradeListRes = new GradeListRes();
+            gradeListRes.setGradeResList(gradeResList);
+            gradeListRes.setProportion(courseDo.getProportion());
+
+            return ResultTool.success(gradeListRes);
         }catch (AllException e){
             log.error(e.getMsg());
             return ResultTool.error(e.getErrCode(), e.getMsg());
@@ -188,5 +196,55 @@ public class TeacherServiceImpl implements TeacherService {
         if(electionDoMapper.deleteByExample(electionDoExample) > 0){
             return ResultTool.success();
         }else return ResultTool.error(EmAllException.DATABASE_ERROR);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public Result studentUp(StudentUpReq studentUpReq) {
+        try {
+            CourseDo courseDo = courseDoMapper.selectByPrimaryKey(studentUpReq.getCourseId());
+            if(courseDo == null){
+                return ResultTool.error(EmAllException.BAD_REQUEST.getErrCode(), "该课程不存在");
+            }
+
+            if(!courseDo.getTeacherId().equals(authTool.getUserId())){
+                return ResultTool.error(EmAllException.REQUEST_FORBIDDEN.getErrCode(), "只能删除自己课程的学生");
+            }
+
+            ElectionDoExample electionDoExample = new ElectionDoExample();
+            electionDoExample.createCriteria()
+                    .andCourseIdEqualTo(studentUpReq.getCourseId())
+                    .andStudentIdEqualTo(studentUpReq.getUserId());
+
+            ElectionDo electionDo = new ElectionDo();
+            electionDo.setUsual(studentUpReq.getUsual());
+            electionDo.setExamination(studentUpReq.getExamination());
+            electionDo.setGrade(
+                    studentUpReq.getUsual().doubleValue()
+                            * studentUpReq.getProportion() +
+                            studentUpReq.getExamination().doubleValue()
+                                    * (1 - studentUpReq.getProportion())
+            );
+            if(electionDoMapper.updateByExampleSelective(electionDo, electionDoExample) == 1){
+                if(!courseDo.getProportion().equals(studentUpReq.getProportion())){
+                    courseDo.setProportion(studentUpReq.getProportion());
+                    if(courseDoMapper.updateByPrimaryKeySelective(courseDo) != 1){
+                        throw new AllException(EmAllException.DATABASE_ERROR);
+                    }
+
+                    if(electionDoMapper.refresh(studentUpReq.getProportion(), courseDo.getId()) < 1){
+                        throw new AllException(EmAllException.DATABASE_ERROR);
+                    }
+                }
+
+                return ResultTool.success();
+            }else {
+                return ResultTool.error(EmAllException.DATABASE_ERROR);
+            }
+        } catch (AllException e) {
+            log.error(e.getMsg());
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return ResultTool.error(e.getErrCode(), e.getMsg());
+        }
     }
 }

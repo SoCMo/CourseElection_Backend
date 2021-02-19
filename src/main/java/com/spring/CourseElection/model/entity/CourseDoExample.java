@@ -693,6 +693,66 @@ public class CourseDoExample {
             addCriterion("election_num not between", value1, value2, "electionNum");
             return (Criteria) this;
         }
+
+        public Criteria andProportionIsNull() {
+            addCriterion("proportion is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andProportionIsNotNull() {
+            addCriterion("proportion is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andProportionEqualTo(Integer value) {
+            addCriterion("proportion =", value, "proportion");
+            return (Criteria) this;
+        }
+
+        public Criteria andProportionNotEqualTo(Integer value) {
+            addCriterion("proportion <>", value, "proportion");
+            return (Criteria) this;
+        }
+
+        public Criteria andProportionGreaterThan(Integer value) {
+            addCriterion("proportion >", value, "proportion");
+            return (Criteria) this;
+        }
+
+        public Criteria andProportionGreaterThanOrEqualTo(Integer value) {
+            addCriterion("proportion >=", value, "proportion");
+            return (Criteria) this;
+        }
+
+        public Criteria andProportionLessThan(Integer value) {
+            addCriterion("proportion <", value, "proportion");
+            return (Criteria) this;
+        }
+
+        public Criteria andProportionLessThanOrEqualTo(Integer value) {
+            addCriterion("proportion <=", value, "proportion");
+            return (Criteria) this;
+        }
+
+        public Criteria andProportionIn(List<Integer> values) {
+            addCriterion("proportion in", values, "proportion");
+            return (Criteria) this;
+        }
+
+        public Criteria andProportionNotIn(List<Integer> values) {
+            addCriterion("proportion not in", values, "proportion");
+            return (Criteria) this;
+        }
+
+        public Criteria andProportionBetween(Integer value1, Integer value2) {
+            addCriterion("proportion between", value1, value2, "proportion");
+            return (Criteria) this;
+        }
+
+        public Criteria andProportionNotBetween(Integer value1, Integer value2) {
+            addCriterion("proportion not between", value1, value2, "proportion");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

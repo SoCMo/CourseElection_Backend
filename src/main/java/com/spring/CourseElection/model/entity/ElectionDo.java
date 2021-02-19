@@ -15,9 +15,9 @@ public class ElectionDo {
 
     private Double grade;
 
-    private Double usual;
+    private Integer usual;
 
-    private Double examination;
+    private Integer examination;
 
     public Integer getId() {
         return id;
@@ -75,19 +75,19 @@ public class ElectionDo {
         this.grade = grade;
     }
 
-    public Double getUsual() {
+    public Integer getUsual() {
         return usual;
     }
 
-    public void setUsual(Double usual) {
+    public void setUsual(Integer usual) {
         this.usual = usual;
     }
 
-    public Double getExamination() {
+    public Integer getExamination() {
         return examination;
     }
 
-    public void setExamination(Double examination) {
+    public void setExamination(Integer examination) {
         this.examination = examination;
     }
 }

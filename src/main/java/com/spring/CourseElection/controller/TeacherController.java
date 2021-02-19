@@ -4,6 +4,7 @@ import com.spring.CourseElection.exception.EmAllException;
 import com.spring.CourseElection.model.request.CourseCreateInfo;
 import com.spring.CourseElection.model.request.CourseUpdateInfo;
 import com.spring.CourseElection.model.request.StudentDelReq;
+import com.spring.CourseElection.model.request.StudentUpReq;
 import com.spring.CourseElection.model.response.Result;
 import com.spring.CourseElection.service.TeacherService;
 import com.spring.CourseElection.tools.ResultTool;
@@ -67,5 +68,11 @@ public class TeacherController {
     @ApiOperation(value = "删除已选学生")
     public Result studentDel(@Validated @RequestBody StudentDelReq studentDelReq){
         return teacherService.studentDel(studentDelReq);
+    }
+
+    @PostMapping("/studentUpdate")
+    @ApiOperation(value = "更新学生成绩")
+    public Result studentUp(@Validated @RequestBody StudentUpReq studentUpReq){
+        return teacherService.studentUp(studentUpReq);
     }
 }

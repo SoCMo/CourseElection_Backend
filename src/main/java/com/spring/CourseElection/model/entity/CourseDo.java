@@ -19,6 +19,8 @@ public class CourseDo {
 
     private Integer electionNum;
 
+    private Integer proportion;
+
     public Integer getId() {
         return id;
     }
@@ -89,5 +91,13 @@ public class CourseDo {
 
     public void setElectionNum(Integer electionNum) {
         this.electionNum = electionNum;
+    }
+
+    public Integer getProportion() {
+        return proportion;
+    }
+
+    public void setProportion(Integer proportion) {
+        this.proportion = proportion;
     }
 }
