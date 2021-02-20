@@ -37,4 +37,10 @@ public class StudentController {
     public Result dropping(Integer id){
         return studentService.drop(id);
     }
+
+    @GetMapping("/grade")
+    @ApiOperation(value = "查询成绩")
+    public Result grade() {
+        return studentService.grade();
+    }
 }

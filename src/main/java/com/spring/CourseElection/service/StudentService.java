@@ -35,4 +35,13 @@ public interface StudentService {
     * @Date: 2021/1/23
     */
     Result drop(Integer id);
+
+    /**
+    * @Description: 学生查询成绩请求体
+    * @Param: []
+    * @Return: com.spring.CourseElection.model.response.Result
+    * @Author: SoCMo
+    * @Date: 2021/2/20
+    */
+    Result grade();
 }

@@ -12,6 +12,10 @@ import lombok.Data;
 public class GradeRes {
     private String userId;
 
+    private Integer courseId;
+
+    private String courseName;
+
     private String name;
 
     private String department;
@@ -23,4 +27,8 @@ public class GradeRes {
     private Integer usual;
 
     private Integer examination;
+
+    private Integer proportion;
+
+    private Integer credit;
 }

@@ -159,6 +159,9 @@ public class TeacherServiceImpl implements TeacherService {
             for(ElectionDo electionDo : electionDoList){
                 GradeRes gradeRes = new GradeRes();
                 BeanUtils.copyProperties(electionDo, gradeRes);
+                gradeRes.setProportion(courseDo.getProportion());
+                gradeRes.setCredit(courseDo.getCredit());
+                gradeRes.setCourseName(courseDo.getName());
 
                 UserDo userDo = userDoMapper.selectByPrimaryKey(electionDo.getStudentId());
                 if(userDo == null) throw new AllException(EmAllException.DATABASE_ERROR);

@@ -7,6 +7,7 @@ import com.spring.CourseElection.exception.EmAllException;
 import com.spring.CourseElection.model.entity.*;
 import com.spring.CourseElection.model.response.Result;
 import com.spring.CourseElection.model.response.info.CourseVo;
+import com.spring.CourseElection.model.response.info.GradeRes;
 import com.spring.CourseElection.model.response.info.StudentListRes;
 import com.spring.CourseElection.service.StudentService;
 import com.spring.CourseElection.tools.AuthTool;
@@ -62,11 +63,47 @@ public class StudentServiceImpl implements StudentService {
         ElectionDoExample electionDoExample = new ElectionDoExample();
         electionDoExample.createCriteria()
                 .andStudentIdEqualTo(authTool.getUserId());
+
+        List<ElectionDo> electionDoList = electionDoMapper.selectByExample(electionDoExample);
+        if(electionDoList.isEmpty()){
+            studentListRes.setChosenList(new ArrayList<>());
+            studentListRes.setHasGradeList(new ArrayList<>());
+            return ResultTool.success(studentListRes);
+        }
+
         studentListRes.setChosenList(
-                electionDoMapper.selectByExample(electionDoExample)
-                        .stream().map(ElectionDo::getCourseId)
+                electionDoList.stream().map(ElectionDo::getCourseId)
                         .collect(Collectors.toList())
         );
+
+        UserDo userDo;
+        try {
+            userDo = authTool.getUser();
+        } catch (AllException e) {
+            return ResultTool.error(EmAllException.DATABASE_ERROR);
+        }
+
+        List<GradeRes> gradeResList = new ArrayList<>();
+        electionDoList.forEach(
+                electionDo -> {
+                    GradeRes gradeRes = new GradeRes();
+                    String teacherName = "";
+                    for(CourseDo courseDo: courseDoList){
+                        if(courseDo.getId().equals(electionDo.getCourseId())){
+                            gradeRes.setProportion(courseDo.getProportion());
+                            gradeRes.setCredit(courseDo.getCredit());
+                            gradeRes.setCourseName(courseDo.getName());
+                            teacherName = courseDo.getTeacherName();
+                            break;
+                        }
+                    }
+                    BeanUtils.copyProperties(userDo, gradeRes);
+                    BeanUtils.copyProperties(electionDo, gradeRes);
+                    gradeRes.setName(teacherName);
+                    gradeResList.add(gradeRes);
+                }
+        );
+        studentListRes.setHasGradeList(gradeResList);
         studentListRes.setCourseVoList(courseVoList);
         return ResultTool.success(studentListRes);
     }
@@ -168,5 +205,52 @@ public class StudentServiceImpl implements StudentService {
         }
 
         return ResultTool.error(EmAllException.DATABASE_ERROR);
+    }
+
+    @Override
+    public Result grade() {
+        CourseDoExample courseDoExample = new CourseDoExample();
+        List<CourseDo> courseDoList =
+                courseDoMapper.selectByExample(courseDoExample);
+
+        if(courseDoList == null || courseDoList.size() == 0){
+            return ResultTool.error(EmAllException.DATABASE_ERROR.getErrCode(),
+                    "当前没有课程");
+        }
+
+        ElectionDoExample electionDoExample = new ElectionDoExample();
+        electionDoExample.createCriteria()
+                .andStudentIdEqualTo(authTool.getUserId());
+
+        List<ElectionDo> electionDoList = electionDoMapper.selectByExample(electionDoExample);
+        if(electionDoList.isEmpty()){
+            return ResultTool.error(EmAllException.BAD_REQUEST.getErrCode(), "当前没有选择的课程");
+        }
+
+        UserDo userDo;
+        try {
+            userDo = authTool.getUser();
+        } catch (AllException e) {
+            return ResultTool.error(EmAllException.DATABASE_ERROR);
+        }
+
+        List<GradeRes> gradeResList = new ArrayList<>();
+        electionDoList.forEach(
+                electionDo -> {
+                    GradeRes gradeRes = new GradeRes();
+                    for(CourseDo courseDo: courseDoList){
+                        if(courseDo.getId().equals(electionDo.getCourseId())){
+                            gradeRes.setProportion(courseDo.getProportion());
+                            gradeRes.setCredit(courseDo.getCredit());
+                            gradeRes.setCourseName(courseDo.getName());
+                            break;
+                        }
+                    }
+                    BeanUtils.copyProperties(userDo, gradeRes);
+                    BeanUtils.copyProperties(electionDo, gradeRes);
+                    gradeResList.add(gradeRes);
+                }
+        );
+        return ResultTool.success(gradeResList);
     }
 }

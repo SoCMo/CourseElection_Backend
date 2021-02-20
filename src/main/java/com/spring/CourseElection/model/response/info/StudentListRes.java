@@ -17,4 +17,6 @@ public class StudentListRes {
     List<CourseVo> courseVoList;
 
     List<Integer> chosenList;
+
+    List<GradeRes> hasGradeList;
 }
