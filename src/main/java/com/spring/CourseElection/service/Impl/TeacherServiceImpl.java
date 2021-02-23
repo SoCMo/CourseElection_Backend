@@ -181,24 +181,36 @@ public class TeacherServiceImpl implements TeacherService {
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Result studentDel(StudentDelReq studentDelReq) {
-        CourseDo courseDo = courseDoMapper.selectByPrimaryKey(studentDelReq.getCourseId());
-        if(courseDo == null){
-            return ResultTool.error(EmAllException.BAD_REQUEST.getErrCode(), "该课程不存在");
-        }
+        try{
+            CourseDo courseDo = courseDoMapper.selectByPrimaryKey(studentDelReq.getCourseId());
+            if(courseDo == null){
+                return ResultTool.error(EmAllException.BAD_REQUEST.getErrCode(), "该课程不存在");
+            }
 
-        if(!courseDo.getTeacherId().equals(authTool.getUserId())){
-            return ResultTool.error(EmAllException.REQUEST_FORBIDDEN.getErrCode(), "只能删除自己课程的学生");
-        }
+            if(!courseDo.getTeacherId().equals(authTool.getUserId())){
+                return ResultTool.error(EmAllException.REQUEST_FORBIDDEN.getErrCode(), "只能删除自己课程的学生");
+            }
 
-        ElectionDoExample electionDoExample = new ElectionDoExample();
-        electionDoExample.createCriteria()
-                .andCourseIdEqualTo(studentDelReq.getCourseId())
-                .andStudentIdEqualTo(studentDelReq.getUserId());
-        if(electionDoMapper.deleteByExample(electionDoExample) > 0){
-            return ResultTool.success();
-        }else return ResultTool.error(EmAllException.DATABASE_ERROR);
+            ElectionDoExample electionDoExample = new ElectionDoExample();
+            electionDoExample.createCriteria()
+                    .andCourseIdEqualTo(studentDelReq.getCourseId())
+                    .andStudentIdEqualTo(studentDelReq.getUserId());
+            if(electionDoMapper.deleteByExample(electionDoExample) > 0){
+                courseDo.setElectionNum(courseDo.getElectionNum() - 1);
+
+                if(courseDoMapper.updateByPrimaryKeySelective(courseDo) < 1){
+                    throw new AllException(EmAllException.DATABASE_ERROR);
+                }
+                return ResultTool.success();
+            }else throw new AllException(EmAllException.DATABASE_ERROR);
+        } catch (AllException e) {
+            log.error(e.getMsg());
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return ResultTool.error(e.getErrCode(), e.getMsg());
+        }
     }
 
     @Transactional(rollbackFor = Exception.class)
