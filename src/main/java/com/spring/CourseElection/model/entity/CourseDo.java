@@ -86,7 +86,7 @@ public class CourseDo {
     }
 
     public Integer getElectionNum() {
-        return electionNum;
+        return electionNum == null ? 0 : electionNum;
     }
 
     public void setElectionNum(Integer electionNum) {

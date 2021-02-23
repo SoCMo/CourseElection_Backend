@@ -60,10 +60,11 @@ public class StudentServiceImpl implements StudentService {
             courseVoList.add(courseVo);
         }
 
+        studentListRes.setCourseVoList(courseVoList);
+
         ElectionDoExample electionDoExample = new ElectionDoExample();
         electionDoExample.createCriteria()
                 .andStudentIdEqualTo(authTool.getUserId());
-
         List<ElectionDo> electionDoList = electionDoMapper.selectByExample(electionDoExample);
         if(electionDoList.isEmpty()){
             studentListRes.setChosenList(new ArrayList<>());
@@ -104,7 +105,6 @@ public class StudentServiceImpl implements StudentService {
                 }
         );
         studentListRes.setHasGradeList(gradeResList);
-        studentListRes.setCourseVoList(courseVoList);
         return ResultTool.success(studentListRes);
     }
 
