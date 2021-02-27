@@ -236,9 +236,9 @@ public class TeacherServiceImpl implements TeacherService {
             electionDo.setExamination(studentUpReq.getExamination());
             electionDo.setGrade(
                     studentUpReq.getUsual().doubleValue()
-                            * studentUpReq.getProportion() +
+                            * studentUpReq.getProportion().doubleValue() / 100 +
                             studentUpReq.getExamination().doubleValue()
-                                    * (1 - studentUpReq.getProportion())
+                                    * (1 - studentUpReq.getProportion().doubleValue() / 100)
             );
             if(electionDoMapper.updateByExampleSelective(electionDo, electionDoExample) == 1){
                 if(!courseDo.getProportion().equals(studentUpReq.getProportion())){
