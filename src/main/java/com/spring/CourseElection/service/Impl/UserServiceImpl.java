@@ -124,6 +124,7 @@ public class UserServiceImpl implements UserService {
         //对User类进行赋值
         UserDo userUpdate = new UserDo();
         BeanUtils.copyProperties(userUpdateInfo, userUpdate);
+        userUpdate.setMobilePhone(userUpdateInfo.getPhone());
         userUpdate.setUserId(authTool.getUserId());
 
         //若成功更新则返回成功，否则返回错误原因并记录
