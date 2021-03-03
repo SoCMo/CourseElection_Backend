@@ -83,6 +83,7 @@ public class UserServiceImpl implements UserService {
         } else {
             UserInfoRes userInfoRes = new UserInfoRes();
             BeanUtils.copyProperties(userDo, userInfoRes);
+            userInfoRes.setPhone(userDo.getMobilePhone());
             userInfoRes.setIdentity(authTool.identityResolveCN(userDo.getIdentity()));
             return ResultTool.success(userInfoRes);
         }

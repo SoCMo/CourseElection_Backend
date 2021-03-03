@@ -24,9 +24,7 @@ public class UserInfoRes {
 
     private List<String> identity;
 
-    private String officePhone;
-
-    private String mobilePhone;
+    private String phone;
 
     private String email;
 
